@@ -4,10 +4,15 @@ const TabsLayout = () => {
   return (
     <Tabs>
         <Tabs.Screen name="index" options={{
-            headerTitle: "Home",
+            headerTitle: "Hello Jimbo",
             title: "Home",
             tabBarActiveBackgroundColor: 'lightblue',
         }}/>
+        <Tabs.Screen name="newStock/newStock" options={{
+            headerTitle: "Add Stock",
+            title: "Add Stock",
+            tabBarActiveBackgroundColor: 'lightblue',
+        }} />
         <Tabs.Screen name="profile/[id]" options={{
             headerTitle: "Profile",
             title: "Profile",
