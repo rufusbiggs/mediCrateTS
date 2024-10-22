@@ -19,13 +19,13 @@ const PrescriptionCard = ({ prescription } : { prescription : Prescription }) =>
 
   return (
     <View style={styles.prescriptionContainer}>
-      <View style={styles.topRow}>
-        <Text style={styles.drugName}>{drug}: {pillDose}mg</Text>
-        <Text>{pillsPerDay} pill{pillsPerDay > 1 ? 's' : ''} per day</Text>
+      <View style={styles.prescriptionDetails}>
+        <Text style={styles.drugName}>{drug} {pillDose}mg</Text>
+        <Text style={styles.dailyDose}>{dailyDose}mg per day</Text>
       </View>
       <View style={styles.bottomRow}>
-        <Text>Runs out: {runsOut(dailyDose, pillDose, currentStock)}</Text>
-        <Text>({currentStock} pills left)</Text>
+        <Text style={styles.dailyPills}>Take {pillsPerDay} pill{pillsPerDay > 1 ? 's' : ''} per day</Text>
+        <Text style={styles.runsOut}>Supply runs out on {runsOut(dailyDose, pillDose, currentStock)}</Text>
       </View>
     </View>
   )
@@ -35,27 +35,56 @@ const styles = StyleSheet.create({
   prescriptionContainer: {
     display: 'flex',
     backgroundColor: 'white',
+    marginLeft: 20,
+    marginRight: 20,
     margin: 10,
-    padding: 10,
-    borderRadius: 10,
+    borderRadius: 15,
+    borderColor: '#f2f2f2',
+    borderWidth: 1,
   },
-  topRow: {
+  prescriptionDetails: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between'
+    padding: 10,
+    gap: 10,
+  },
+  prescriptionText: {
+    color: 'black',
+    marginBottom: 4,
   },
   bottomRow: {
-    marginTop: 10,
+    paddingLeft: 5,
     display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between'
+    flexDirection: 'column',
   },
   drugName: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     paddingBottom: 5,
+    color: 'black',
+  },
+  dailyDose: {
+    color: 'grey',
+  },
+  dailyPills: {
+    backgroundColor: '#edf2f9',
+    color: '#335db0',
+    fontWeight: 'bold',
+    borderRadius: 10,
+    padding: 5,
+    margin: 4,
+    alignSelf: 'flex-start',
+  },
+  runsOut: {
+    backgroundColor: '#fff2de',
+    color: '#a05f3a',
+    fontWeight: 'bold',
+    borderRadius: 10,
+    padding: 5,
+    margin: 4,
+    marginBottom: 15,
+    alignSelf: 'flex-start',
   }
 })
 
