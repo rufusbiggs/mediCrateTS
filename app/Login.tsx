@@ -47,6 +47,7 @@ const Login = () => {
 
              <Button 
                 title = "Sign Up"
+                
              />
 
         </View>

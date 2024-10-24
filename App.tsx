@@ -1,22 +1,36 @@
-// App.tsx
-import { AuthProvider, AuthContext } from './app/auth/AuthContext';
-import { ExpoRoot } from 'expo-router';
-import Login from './app/Login';  // Adjust the path as necessary
+import React from 'react';
+import { AuthProvider, useAuth } from './app/auth/AuthContext';
+import { NavigationContainer } from '@react-navigation/native';
+import TabsLayout from './app/(tabs)/_layout';
+import { createStackNavigator } from '@react-navigation/stack';
+import Register from './app/Register';
+import Login from './app/Login'; 
 
-function AppContent() {
-  const { user } = AuthContext();
+const Stack = createStackNavigator();
 
-  if (!user) {
-    return <Login />; // Redirect to Login if no user is logged in
-  }
+const AppNavigator = () => {
+  const { user } = useAuth();
 
-//   return <ExpoRoot />; // Show the app content (e.g., tabs) if user is logged in
-}
+  return (
+    <NavigationContainer>
+      {user ? (
+        <TabsLayout /> 
+      ) : (
+        <Stack.Navigator>
+          <Stack.Screen name = "Login" component = {Login} />
+          <Stack.Screen name = "Register" component = {Register} />
+        </Stack.Navigator>
+      )}
+    </NavigationContainer>
+  );
+};
 
-export default function App() {
+const App = () => {
   return (
     <AuthProvider>
-      <AppContent />
+      <AppNavigator />
     </AuthProvider>
-  );
+  )
 }
+
+export default App;
