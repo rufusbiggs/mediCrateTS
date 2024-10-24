@@ -1,4 +1,4 @@
-export const calculateFutureDate = (daysToAdd: number): string => {
+export const calculateFutureDate = (daysToAdd: number, yearIncluded: boolean): string => {
     const today = new Date();
     const futureDate = new Date();
     futureDate.setDate(today.getDate() + daysToAdd);
@@ -6,7 +6,7 @@ export const calculateFutureDate = (daysToAdd: number): string => {
     const month = futureDate.toLocaleString('default', { month: 'short' });
     const year = futureDate.getFullYear();
 
-    return `${day} ${month} ${year}`;
+    return yearIncluded ? `${day} ${month} ${year}` : `${day} ${month}`;
 }
 
 export const daysLeft = (numPills: number, numPerDay: number) : number => {
@@ -19,7 +19,7 @@ export const runsOut = (dailyDose: number, pillDose: number, numPills: number) :
     const numPerDay = dailyDose / pillDose;
     const days = daysLeft(numPills, numPerDay);
 
-    return calculateFutureDate(days);
+    return calculateFutureDate(days, true);
 }
 
 

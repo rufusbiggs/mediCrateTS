@@ -1,11 +1,8 @@
 // import { Link } from 'expo-router'
 import { StyleSheet, View, Text, ScrollView } from 'react-native'
 import PrescriptionCard from '../components/PrescriptionCard';
-import { calculateFutureDate } from '../../services/functions';
+import { calculateFutureDate, getCurrentStock, daysLeft } from '../../services/functions';
 import { FontAwesome5 } from '@expo/vector-icons'
-
-// import PRESCRIPTIONS from '../../mock_data/prescriptions.JSON';
-
 
 // Fetch Prescriptions e.g.
 interface Prescription {
@@ -58,9 +55,24 @@ const prescriptionsData : Prescription[] = [
 ]
 ; 
 
+const DELIVERY_TIME = 4;
+
 const HomePage = () => {
 
-  const today = calculateFutureDate(0);
+  const today = calculateFutureDate(0, true);
+  const allPrescriptionsDaysLeft : number[] = prescriptionsData.map(({ startDate, initialStock, addedPills, pillDose, dailyDose }) => {
+    const numPerDay = dailyDose / pillDose;
+    const startDateDateFormat = new Date(startDate)
+    const currentStock = getCurrentStock(startDateDateFormat, dailyDose, pillDose, addedPills, initialStock);
+    const timeLeft = daysLeft(currentStock, numPerDay);
+
+    return timeLeft
+  });
+
+  const daysUntilSoonest : number = Math.min(...allPrescriptionsDaysLeft);
+  const daysIncludingDelivery : number = daysUntilSoonest - DELIVERY_TIME;
+  const runOutDate = calculateFutureDate(daysIncludingDelivery, false);
+
   return (
     <ScrollView style={styles.main}>
         <View style={styles.headingBar}>
@@ -69,7 +81,7 @@ const HomePage = () => {
         <View style={styles.notificationBox}>
           <FontAwesome5 name="pills" size={30} color="white" />
           <View>
-            <Text style={styles.orderBefore}>Order prescription before 4 March!</Text>
+            <Text style={styles.orderBefore}>Order prescription before {runOutDate}!</Text>
             <Text style={styles.runsOut}>Your stock will run out a few days later</Text>
           </View>
         </View>

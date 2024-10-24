@@ -1,5 +1,5 @@
 import { Tabs } from "expo-router"
-import { FontAwesome } from '@expo/vector-icons'
+import { FontAwesome, Octicons } from '@expo/vector-icons'
 
 
 const TabsLayout = () => {
@@ -18,13 +18,23 @@ const TabsLayout = () => {
         }}/>
         <Tabs.Screen name="newStock/newStock" options={{
             headerStatusBarHeight: 40,
-            headerTitle: "Add Stock",
-            title: "Add Stock",
+            headerTitle: "Add Pills",
+            title: "Add Pills",
             tabBarActiveTintColor: '#1e7378',
             tabBarActiveBackgroundColor: '#f4fef1',
             tabBarIcon: ({ color, size }) => (
               <FontAwesome name="plus-circle" color={color} size={size} />
             ),
+        }} />
+        <Tabs.Screen name="missedDose/missedDose" options={{
+          headerStatusBarHeight: 40,
+          headerTitle: "Missed Dose",
+          title: "Missed Dose",
+          tabBarActiveTintColor: '#1e7378',
+          tabBarActiveBackgroundColor: '#f4fef1',
+          tabBarIcon: ({ color, size }) => (
+            <Octicons name="skip" color={color} size={size} />
+          ),
         }} />
         <Tabs.Screen name="profile/[id]" options={{
             headerStatusBarHeight: 40,

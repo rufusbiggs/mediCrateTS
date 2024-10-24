@@ -1,20 +1,22 @@
-// import { StatusBar } from 'expo-status-bar';
-// import { StyleSheet, Text, View } from 'react-native';
+// App.tsx
+import { AuthProvider, useAuth } from './app/auth/AuthContext';
+import { ExpoRoot } from 'expo-router';
+import Login from './app/Login';  // Adjust the path as necessary
 
-// export default function App() {
-//   return (
-//     <View style={styles.container}>
-//       <Text>Open up App.tsx to start working on your app!</Text>
-//       <StatusBar style="auto" />
-//     </View>
-//   );
-// }
+function AppContent() {
+  const { user } = useAuth();
 
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: '#fff',
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//   },
-// });
+  if (!user) {
+    return <Login />; // Redirect to Login if no user is logged in
+  }
+
+  return <ExpoRoot />; // Show the app content (e.g., tabs) if user is logged in
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
+  );
+}
