@@ -10,7 +10,7 @@ interface AuthContextType {
 
 export const AuthContext = createContext<AuthContextType | null>(null);
 
-export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }: any) => {
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<any>(null);
 
     useEffect(() => {
@@ -21,35 +21,49 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }: an
         return () => unsubscribe();
     }, []);
 
+    const login = async (email: string, password: string) => {
+        try {
+            await auth().signInWithEmailAndPassword(email, password);
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
+    const register = async (email: string, password: string) => {
+        try {
+            await auth().createUserWithEmailAndPassword(email, password);
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
+    const logout = async () => {
+        try {
+            await auth().signOut();
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
     return (
         <AuthContext.Provider
             value = {{
                 user,
-                login: async (email: string, password: string) => {
-                    try {
-                        await auth().signInWithEmailAndPassword(email, password);
-                    } catch (e) {
-                        console.error(e);
-                    }
-                },
-                register: async (email: string, password: string) => {
-                    try {
-                        await auth().createUserWithEmailAndPassword(email, password);
-                    } catch (e) {
-                        console.error(e);
-                    }
-                },
-                logout: async () => {
-                    try {
-                        await auth().signOut();
-                    } catch (e) {
-                        console.error(e);
-                    }
-                }
+                login,
+                register,
+                logout,
             }}
         >
             {children}
         </AuthContext.Provider>
     )
+}
+
+export const useAuth = () => {
+    const context = React.useContext(AuthContext);
+    if (!context) {
+        throw new Error('useAuth must be used with an AuthProvider')
+    }
+    return context;
 }
   
