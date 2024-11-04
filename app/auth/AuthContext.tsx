@@ -1,5 +1,6 @@
 import React, { createContext, useEffect, useState, ReactNode } from 'react';
-import auth from '@react-native-firebase/auth';
+import { auth } from '../firebaseConfig'
+import { onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'firebase/auth';
 
 interface AuthContextType {
     user: any;
@@ -14,7 +15,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<any>(null);
 
     useEffect(() => {
-        const unsubscribe = auth().onAuthStateChanged((user) => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
             setUser(user);
         });
 
@@ -23,7 +24,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const login = async (email: string, password: string) => {
         try {
-            await auth().signInWithEmailAndPassword(email, password);
+            await signInWithEmailAndPassword(auth, email, password);
         } catch (e) {
             console.error(e);
         }
@@ -31,7 +32,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const register = async (email: string, password: string) => {
         try {
-            await auth().createUserWithEmailAndPassword(email, password);
+            await createUserWithEmailAndPassword(auth, email, password);
         } catch (e) {
             console.error(e);
         }
@@ -39,7 +40,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const logout = async () => {
         try {
-            await auth().signOut();
+            await signOut(auth);
         } catch (e) {
             console.error(e);
         }

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "504542276669",
+    "project_id": "pilltrack-132e8",
+    "storage_bucket": "pilltrack-132e8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:504542276669:android:fa9fba94eff641311fce54",
+        "android_client_info": {
+          "package_name": "com.biggsolutions1.PillTrack"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCRgQ9hNCnaW0gl_W_p-ECrMUwq-7hN5sc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
