@@ -1,5 +1,5 @@
 // import { Link } from 'expo-router'
-import { StyleSheet, View, Text, ScrollView } from 'react-native'
+import { StyleSheet, View, Text, ScrollView, Button } from 'react-native'
 import PrescriptionCard from '../components/PrescriptionCard';
 import { calculateFutureDate, getCurrentStock, daysLeft } from '../../services/functions';
 import { FontAwesome5 } from '@expo/vector-icons'
@@ -76,6 +76,7 @@ const HomePage = () => {
   return (
     <ScrollView style={styles.main}>
         <View style={styles.headingBar}>
+          {/* <Button title="logout" onPress={handleLogout} ></Button> */}
           <Text>Today {today}</Text>
         </View>
         <View style={styles.notificationBox}>

@@ -1,8 +1,15 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, Alert } from 'react-native';
+import { View, Text, TextInput, Button } from 'react-native';
 import { useAuth } from './auth/AuthContext';
+import { useNavigation } from 'expo-router/build';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../navigationTypes';
+
+type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
 
 const Login = () => {
+
+    const navigation = useNavigation<LoginScreenNavigationProp>();
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -47,7 +54,7 @@ const Login = () => {
 
              <Button 
                 title = "Sign Up"
-                
+                onPress = {() => navigation.navigate('Register')}
              />
 
         </View>
