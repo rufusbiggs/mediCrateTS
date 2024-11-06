@@ -1,5 +1,5 @@
 // import { Link } from 'expo-router'
-import { StyleSheet, View, Text, ScrollView, Button } from 'react-native'
+import { StyleSheet, View, Text, ScrollView } from 'react-native'
 import PrescriptionCard from '../components/PrescriptionCard';
 import { calculateFutureDate, getCurrentStock, daysLeft } from '../../services/functions';
 import { FontAwesome5 } from '@expo/vector-icons'

@@ -16,7 +16,6 @@ const Login = () => {
     const [loading, setLoading] = useState(false);
     const { login } = useAuth();
 
-    // fireBase logic
     const handleLogin = async () => {
         try {
             setLoading(true);

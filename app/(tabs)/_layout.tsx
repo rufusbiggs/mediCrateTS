@@ -1,6 +1,7 @@
 import { Tabs } from "expo-router"
 import { FontAwesome, Octicons } from '@expo/vector-icons'
 import { AuthProvider, useAuth } from '../auth/AuthContext';
+import { UserProvider } from "../user/UserContext";
 import { createStackNavigator } from '@react-navigation/stack';
 import Register from '../Register';
 import Login from '../Login'; 
@@ -12,7 +13,9 @@ const Stack = createStackNavigator();
 const Layout = () => {
   return (
     <AuthProvider>
+      <UserProvider>
         <AuthRouter />
+      </UserProvider>
     </AuthProvider>
   );
 }
