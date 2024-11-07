@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, ScrollView } from 'react-native'
 import PrescriptionCard from '../components/PrescriptionCard';
 import { calculateFutureDate, getCurrentStock, daysLeft } from '../../services/functions';
 import { FontAwesome5 } from '@expo/vector-icons'
+import { useUser } from '../user/UserContext';
 
 // Fetch Prescriptions e.g.
 interface Prescription {
@@ -58,6 +59,8 @@ const prescriptionsData : Prescription[] = [
 const DELIVERY_TIME = 4;
 
 const HomePage = () => {
+
+  const { userData } = useUser();
 
   const today = calculateFutureDate(0, true);
   const allPrescriptionsDaysLeft : number[] = prescriptionsData.map(({ startDate, initialStock, addedPills, pillDose, dailyDose }) => {

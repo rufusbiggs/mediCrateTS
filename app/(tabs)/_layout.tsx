@@ -1,12 +1,13 @@
 import { Tabs } from "expo-router"
 import { FontAwesome, Octicons } from '@expo/vector-icons'
 import { AuthProvider, useAuth } from '../auth/AuthContext';
+import { useUser } from '../user/UserContext';
 import { UserProvider } from "../user/UserContext";
 import { createStackNavigator } from '@react-navigation/stack';
 import Register from '../Register';
 import Login from '../Login'; 
 import React, { useState, useEffect } from 'react';
-import { View, ActivityIndicator, Text, StyleSheet } from 'react-native';
+import { View, ActivityIndicator, StyleSheet } from 'react-native';
 
 const Stack = createStackNavigator();
 
@@ -22,18 +23,36 @@ const Layout = () => {
 
 const AuthRouter = () => {
   const [loading, setLoading] = useState(true);
+  const [userData, setUserData] = useState<any>({});
   const { user } = useAuth();
+  const { fetchData } = useUser();
 
   useEffect(() => {
     const checkAuth = async () => {
       setLoading(true);
       // simulate time delay to show loading icon
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      setLoading(false)
+      try {
+        const data = await fetchData(user.uid);
+        setUserData(data)
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      } catch (e) {
+        console.error('Error fetching user data', e)
+      } finally {
+        setLoading(false)
+      }
     }
 
     checkAuth();
   }, [user]);
+
+  // useEffect(() => {
+  //   const getUserData = async () => {
+  //     const data = await fetchData(user.uid);
+  //     setUserData(data)
+  //   }
+
+  //   getUserData()
+  // }, [user])
 
   if (loading) {
     return (
@@ -47,7 +66,7 @@ const AuthRouter = () => {
       <Tabs>
           <Tabs.Screen name="index" options={{
               headerStatusBarHeight: 40,
-              headerTitle: "Hi Emily",
+              headerTitle: `Hell ${userData.name}`,
               title: "Home",
               tabBarActiveTintColor: '#1e7378',
               tabBarActiveBackgroundColor: '#f4fef1',
@@ -62,6 +81,7 @@ const AuthRouter = () => {
               title: "Add Pills",
               tabBarActiveTintColor: '#1e7378',
               tabBarActiveBackgroundColor: '#f4fef1',
+              // tabBarInactiveTintColor: '#DADADA',
               tabBarIcon: ({ color, size }) => (
                 <FontAwesome name="plus-circle" color={color} size={size} />
               ),
@@ -89,8 +109,8 @@ const AuthRouter = () => {
       </Tabs>
       ) : (
           <Stack.Navigator>
-            <Stack.Screen name = "Login" component = {Login} />
-            <Stack.Screen name = "Register" component = {Register} />
+            <Stack.Screen name = "Login" component = {Login} options = {{title: 'Welcome to PillTrack'}} />
+            <Stack.Screen name = "Register" component = {Register} options = {{title: 'Sign Up to PillTrack'}} />
           </Stack.Navigator>
       )
 };
@@ -103,5 +123,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'column'
-  }
+  },
 })

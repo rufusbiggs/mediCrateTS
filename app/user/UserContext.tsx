@@ -1,12 +1,13 @@
 import React, { createContext, useEffect, useState, useContext, ReactNode } from 'react';
 import { useAuth } from '../auth/AuthContext';
 import { database } from '../firebaseConfig';
-import { ref, onValue, update } from 'firebase/database';
+import { ref, onValue, update, get } from 'firebase/database';
 
 interface UserContextType {
     userData: UserDataType,
     updateUserData: (userId: string, data: Partial<UserDataType>) => Promise<void>;
     setUserData: React.Dispatch<React.SetStateAction<any>>;
+    fetchData: (userId: string) => Promise<void>;
 }
 
 type UserDataType = {
@@ -28,6 +29,24 @@ export const UserProvider = ({ children }: { children : ReactNode }) => {
         }
     }
 
+    const fetchData = async (userId: string) => {
+        try {
+            const dbRef = ref(database, `user/${userId}`);
+            const snapshot = await get(dbRef);
+            if (snapshot.exists()) {
+                return snapshot.val();
+            } else {
+                console.log('No data exists for this user', userId)
+            }
+        } catch (e) {
+            console.error('Error fetching user data', e)
+        }
+    }
+
+    // const fetchRealTimeData = async (userId: string) => {
+
+    // }
+
     useEffect(() => {
         if (user) {
             const userRef = ref(database, `users/${user.uid}`);
@@ -40,7 +59,7 @@ export const UserProvider = ({ children }: { children : ReactNode }) => {
     }, [user]);
 
     return (
-        <UserContext.Provider value={{userData, updateUserData, setUserData}} >
+        <UserContext.Provider value={{userData, updateUserData, setUserData, fetchData}} >
             {children}
         </UserContext.Provider>
     )
