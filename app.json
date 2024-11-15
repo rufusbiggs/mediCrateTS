@@ -18,13 +18,15 @@
     "ios": {
       "googleServicesFile": "./GoogleService-Info.plist",
       "supportsTablet": true,
-      "bundleIdentifier": "com.biggsolutions1.PillTrack"
+      "bundleIdentifier": "com.biggsolutions1.PillTrack",
+      "newArchEnabled": true
     },
     "android": {
       "googleServicesFile": "google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#ffffff",
+        "newArchEnabled": true
       },
       "package": "com.biggsolutions1.PillTrack"
     },

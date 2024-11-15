@@ -1,6 +1,7 @@
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
+    "jsx": "react-jsx",
     "strict": true,
     "skipLibCheck": true, // Skip checking of declaration files for improved performance
     "esModuleInterop": true, // Allows default imports from modules with no default export
@@ -20,7 +21,7 @@
   "include": [
     "app/**/*", // Include your app directory
     "src/**/*"  // Adjust this according to your project structure
-, "navigationTypes.ts"  ],
+, "navigationTypes.ts", "services/firebaseConfig.ts"  ],
   "exclude": [
     "node_modules" // Exclude node_modules directory
   ]

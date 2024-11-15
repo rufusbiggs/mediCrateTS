@@ -1,5 +1,5 @@
 import React, { createContext, useEffect, useState, ReactNode } from 'react';
-import { auth } from '../firebaseConfig'
+import { auth } from '../../services/firebaseConfig'
 import { onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, User } from 'firebase/auth';
 
 interface AuthContextType {
@@ -11,7 +11,7 @@ interface AuthContextType {
 
 export const AuthContext = createContext<AuthContextType | null>(null);
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
+const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<any>(null);
     
     useEffect(() => {
@@ -71,3 +71,5 @@ export const useAuth = () => {
     }
     return context;
 }
+
+export default AuthProvider;

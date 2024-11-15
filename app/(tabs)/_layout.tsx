@@ -1,8 +1,8 @@
 import { Tabs } from "expo-router"
 import { FontAwesome, Octicons } from '@expo/vector-icons'
-import { AuthProvider, useAuth } from '../auth/AuthContext';
+import AuthProvider, { useAuth } from '../auth/AuthContext';
 import { useUser } from '../user/UserContext';
-import { UserProvider } from "../user/UserContext";
+import UserProvider from "../user/UserContext";
 import { createStackNavigator } from '@react-navigation/stack';
 import Register from '../Register';
 import Login from '../Login'; 
@@ -30,15 +30,18 @@ const AuthRouter = () => {
   useEffect(() => {
     const checkAuth = async () => {
       setLoading(true);
-      // simulate time delay to show loading icon
-      try {
-        const data = await fetchData(user.uid);
-        setUserData(data)
-        await new Promise(resolve => setTimeout(resolve, 1000));
-      } catch (e) {
-        console.error('Error fetching user data', e)
-      } finally {
-        setLoading(false)
+      if (user) {
+        try {
+          const data = await fetchData(user.uid);
+          setUserData(data)
+          await new Promise(resolve => setTimeout(resolve, 1000));
+        } catch (e) {
+          console.error('Error fetching user data', e)
+        } finally {
+          setLoading(false)
+        }
+      } else {
+        setLoading(false);
       }
     }
 

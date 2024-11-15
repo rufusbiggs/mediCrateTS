@@ -1,6 +1,6 @@
 import React, { createContext, useEffect, useState, useContext, ReactNode } from 'react';
 import { useAuth } from '../auth/AuthContext';
-import { database } from '../firebaseConfig';
+import { database } from '../../services/firebaseConfig';
 import { ref, onValue, update, get } from 'firebase/database';
 
 interface UserContextType {
@@ -16,7 +16,7 @@ type UserDataType = {
 
 const UserContext = createContext<UserContextType | null>(null);
 
-export const UserProvider = ({ children }: { children : ReactNode }) => {
+const UserProvider = ({ children }: { children : ReactNode }) => {
     const { user } = useAuth();
     const [userData, setUserData] = useState<UserDataType>({});
 
@@ -72,3 +72,5 @@ export const useUser = () => {
     }
     return context;
 }
+
+export default UserProvider;
