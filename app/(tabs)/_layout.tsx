@@ -66,7 +66,7 @@ const AuthRouter = () => {
       <Tabs>
           <Tabs.Screen name="index" options={{
               headerStatusBarHeight: 40,
-              headerTitle: `Hell ${userData.name}`,
+              headerTitle: `Hello ${userData.name}`,
               title: "Home",
               tabBarActiveTintColor: '#1e7378',
               tabBarActiveBackgroundColor: '#f4fef1',

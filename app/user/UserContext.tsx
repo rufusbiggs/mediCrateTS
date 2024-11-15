@@ -31,7 +31,7 @@ export const UserProvider = ({ children }: { children : ReactNode }) => {
 
     const fetchData = async (userId: string) => {
         try {
-            const dbRef = ref(database, `user/${userId}`);
+            const dbRef = ref(database, `users/${userId}`);
             const snapshot = await get(dbRef);
             if (snapshot.exists()) {
                 return snapshot.val();
