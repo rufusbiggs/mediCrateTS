@@ -1,6 +1,9 @@
 import { ScrollView, View, Text, StyleSheet } from "react-native"
 import AddStockCard from "../../components/AddStockCard"
 import NewPrescription from "../../components/NewPrescription"
+import { createStackNavigator } from '@react-navigation/stack';
+
+const Stack = createStackNavigator();
 
 interface Prescription {
   id: number,
@@ -52,7 +55,7 @@ const prescriptionsData : Prescription[] = [
 ]
 ;
 
-const newStock = () => {
+const NewStock = () => {
   return (
     <ScrollView style={styles.main}>
       <View style={styles.descriptionContainer}>
@@ -85,4 +88,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default newStock
+export default NewStock

@@ -48,15 +48,6 @@ const AuthRouter = () => {
     checkAuth();
   }, [user]);
 
-  // useEffect(() => {
-  //   const getUserData = async () => {
-  //     const data = await fetchData(user.uid);
-  //     setUserData(data)
-  //   }
-
-  //   getUserData()
-  // }, [user])
-
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -68,7 +59,7 @@ const AuthRouter = () => {
   return user ? (
       <Tabs>
           <Tabs.Screen name="index" options={{
-              headerStatusBarHeight: 40,
+              headerStatusBarHeight: 10,
               headerTitle: `Hello ${userData.name}`,
               title: "Home",
               tabBarActiveTintColor: '#1e7378',
@@ -78,8 +69,8 @@ const AuthRouter = () => {
                 <FontAwesome name="home" color={color} size={size} />
               ),
           }}/>
-          <Tabs.Screen name="newStock/newStock" options={{
-              headerStatusBarHeight: 40,
+          <Tabs.Screen name="newStock/newStockStack" options={{
+              headerStatusBarHeight: 10,
               headerTitle: "Add Pills",
               title: "Add Pills",
               tabBarActiveTintColor: '#1e7378',
@@ -90,7 +81,7 @@ const AuthRouter = () => {
               ),
           }} />
           <Tabs.Screen name="missedDose/missedDose" options={{
-            headerStatusBarHeight: 40,
+            headerStatusBarHeight: 10,
             headerTitle: "Missed Dose",
             title: "Missed Dose",
             tabBarActiveTintColor: '#1e7378',
@@ -100,7 +91,7 @@ const AuthRouter = () => {
             ),
           }} />
           <Tabs.Screen name="profile/[id]" options={{
-              headerStatusBarHeight: 40,
+              headerStatusBarHeight: 10,
               headerTitle: "Emily Moench",
               title: "Account",
               tabBarActiveTintColor: '#1e7378',
