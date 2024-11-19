@@ -6,7 +6,7 @@ import UserProvider from "../user/UserContext";
 import { createStackNavigator } from '@react-navigation/stack';
 import Register from '../Register';
 import Login from '../Login'; 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
 
 const Stack = createStackNavigator();
@@ -69,18 +69,18 @@ const AuthRouter = () => {
                 <FontAwesome name="home" color={color} size={size} />
               ),
           }}/>
-          <Tabs.Screen name="newStock/newStockStack" options={{
+          <Tabs.Screen name="newStock" options={{
               headerStatusBarHeight: 10,
               headerTitle: "Add Pills",
               title: "Add Pills",
               tabBarActiveTintColor: '#1e7378',
               tabBarActiveBackgroundColor: '#f4fef1',
-              // tabBarInactiveTintColor: '#DADADA',
+              headerShown: false,
               tabBarIcon: ({ color, size }) => (
                 <FontAwesome name="plus-circle" color={color} size={size} />
               ),
-          }} />
-          <Tabs.Screen name="missedDose/missedDose" options={{
+          }}/>
+          <Tabs.Screen name="missedDose/index" options={{
             headerStatusBarHeight: 10,
             headerTitle: "Missed Dose",
             title: "Missed Dose",
