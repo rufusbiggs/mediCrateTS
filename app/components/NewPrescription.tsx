@@ -29,11 +29,8 @@ const styles = StyleSheet.create({
         color: '#a05f3a',
         fontWeight: 'bold',
         borderRadius: 10,
-        padding: 8,
-        paddingRight: 20,
-        paddingLeft: 20,
-        margin: 15,
-        marginBottom: 15,
+        paddingVertical: 8,
+        paddingHorizontal: 24,
         alignSelf: 'center',
     }
 })

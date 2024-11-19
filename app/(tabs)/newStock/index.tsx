@@ -21,7 +21,7 @@ const NewStockStack = () => {
             <Stack.Screen 
                 name='AddNewStockDetails'
                 component={AddNewStockDetails}
-                options={{ headerTitle: 'Add Pills'}}                
+                options={{ headerTitle: 'New Prescription'}}                
             />
         </Stack.Navigator>
     )

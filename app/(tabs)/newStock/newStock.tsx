@@ -67,7 +67,9 @@ const NewStock = () => {
             <AddStockCard key={idx} prescription={prescription} />
           )
         })}
-      <NewPrescription />
+      <View style={styles.newPrescriptionbutton}>
+        <NewPrescription />
+      </View>
     </ScrollView>
   )
 }
@@ -83,8 +85,9 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 16,
     paddingBottom: 6,
-    // fontWeight: 'bold',
-
+  },
+  newPrescriptionbutton: {
+    paddingTop: 20,
   }
 })
 

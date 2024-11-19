@@ -59,7 +59,6 @@ const AuthRouter = () => {
   return user ? (
       <Tabs>
           <Tabs.Screen name="index" options={{
-              headerStatusBarHeight: 10,
               headerTitle: `Hello ${userData.name}`,
               title: "Home",
               tabBarActiveTintColor: '#1e7378',
@@ -70,7 +69,6 @@ const AuthRouter = () => {
               ),
           }}/>
           <Tabs.Screen name="newStock" options={{
-              headerStatusBarHeight: 10,
               headerTitle: "Add Pills",
               title: "Add Pills",
               tabBarActiveTintColor: '#1e7378',
@@ -81,7 +79,6 @@ const AuthRouter = () => {
               ),
           }}/>
           <Tabs.Screen name="missedDose/index" options={{
-            headerStatusBarHeight: 10,
             headerTitle: "Missed Dose",
             title: "Missed Dose",
             tabBarActiveTintColor: '#1e7378',
@@ -91,7 +88,6 @@ const AuthRouter = () => {
             ),
           }} />
           <Tabs.Screen name="profile/[id]" options={{
-              headerStatusBarHeight: 10,
               headerTitle: "Emily Moench",
               title: "Account",
               tabBarActiveTintColor: '#1e7378',
