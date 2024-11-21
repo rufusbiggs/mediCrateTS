@@ -12,9 +12,7 @@ const NewPrescription = () => {
 
   return (
     <TouchableOpacity
-    style={[
-      styles.button
-    ]}
+    style={styles.button}
     onPress={handlePress}
     disabled={false}
     >

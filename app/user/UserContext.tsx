@@ -43,10 +43,6 @@ const UserProvider = ({ children }: { children : ReactNode }) => {
         }
     }
 
-    // const fetchRealTimeData = async (userId: string) => {
-
-    // }
-
     useEffect(() => {
         if (user) {
             const userRef = ref(database, `users/${user.uid}`);
