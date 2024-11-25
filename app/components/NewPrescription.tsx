@@ -1,7 +1,6 @@
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { NewStockStackParamList } from "../(tabs)/newStock";
-import CustomButton from "./CustomButton";
 
 const NewPrescription = () => {
   const navigation = useNavigation<NavigationProp<NewStockStackParamList>>();

@@ -1,6 +1,10 @@
-import { View, ScrollView, Text, StyleSheet, TextInput, TouchableOpacity, Touchable } from 'react-native';
+import { View, ScrollView, Text, StyleSheet, TextInput, TouchableOpacity, Platform, Alert } from 'react-native';
 import { useState } from 'react';
 import { useUser } from '../../user/UserContext';
+import { useAuth } from '../../auth/AuthContext';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { NewStockStackParamList } from "./index";
 
 interface Prescription {
     id: number,
@@ -14,74 +18,138 @@ interface Prescription {
 
 const AddNewStockDetails = () => {
 
-    const { userData } = useUser();
+    const navigation = useNavigation<NavigationProp<NewStockStackParamList>>();
+    const { user } = useAuth();
+    const { addPrescription } = useUser();
 
     const [drug, setDrug] = useState('');
     const [pillDose, setPillDose] = useState('');
     const [dailyDose, setDailyDose] = useState('');
     const [numberPills, setNumberPills] = useState('');
+    const [startDate, setStartDate] = useState<Date | undefined >();
+    const [showDatePicker, setShowDatePicker] = useState(false);
     const [loadingSubmit, setLoadingSubmit] = useState(false);
-    const [prescription, setPrescription] = useState<Prescription>();
 
-    const addPrescription = () => {
-        // find out if there are any prescriptions already
-        // set the ID (+1 on the latest ID or 1)
-        // Set the Name, Pill Dose, Dose per Pill, Number of Pills (initial stock)
-        // Set startDate
+    const handleDateChange = (event: any, selectedDate: Date | undefined) => {
+        setShowDatePicker(false);
+        if (selectedDate) {
+            setStartDate(selectedDate);
+        }
     }
 
-    const handleSubmit = () => {
-        setLoadingSubmit(true);
-        // add the prescription to the database
+    const formatDate = (date: Date | undefined) => {
+        if (!date) return '';
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+    }
 
+    const handleSubmit = async () => {
+        if (!drug || !pillDose || !dailyDose || !startDate || !numberPills) {
+            Alert.alert('Error', 'You must fill in all the fields!');
+            return;
+        }
+
+        setLoadingSubmit(true);
+        const newPrescription: Prescription = {
+            id: Date.now(),
+            drug: drug,
+            pillDose: Number(pillDose),
+            dailyDose: Number(dailyDose) / Number(pillDose),
+            startDate: startDate ? startDate.toISOString() : new Date().toISOString(),
+            initialStock: Number(numberPills),
+            addedPills: [],
+        }
+        // add the prescription to the database
+        try {
+            addPrescription(user.uid, newPrescription);
+            Alert.alert(
+                'Success',
+                'Prescription added successfully!',
+                [{
+                    text: 'OK',
+                    onPress: () => {
+                        navigation.navigate('NewStock');
+                    }
+                }]
+            )
+        }
+        catch (e) {
+            console.error('Error adding prescription', e);
+            Alert.alert('Error', 'Something went wrong, please try again.')
+        } finally {
+            setLoadingSubmit(false);
+        }      
     }
 
     return (
         <ScrollView style={styles.main}>
-            <Text>Please enter the details of your new prescription. If you have more than one, submit each prescription separately.</Text>
+            <Text style={styles.description}>Enter the details of your new prescription.</Text>
             <View style={styles.inputsContainer}>
-                <TextInput 
-                    style={styles.input}
-                    placeholder = 'Drug Name'
-                    value={drug}
-                    onChangeText={setDrug}
-                />
-                <TextInput 
-                    style={styles.input}
-                    placeholder = 'Pill Dose (mg)'
-                    value={pillDose}
-                    keyboardType='numeric'
-                    onChangeText={setDrug}
-                />
-                <TextInput 
-                    style={styles.input}
-                    placeholder = 'Dose per Day (mg)'
-                    value={dailyDose}
-                    keyboardType='numeric'
-                    onChangeText={setDrug}
-                />
-                <TextInput 
-                    style={styles.input}
-                    placeholder = 'Number of Pills'
-                    value={numberPills}
-                    keyboardType='numeric'
-                    onChangeText={setDrug}
-                />
-            </View>
+                <View style={styles.inputGroup}>
+                    <Text style={styles.label}>Prescription Name</Text>
+                    <TextInput 
+                        style={styles.input}
+                        placeholder = 'Drug Name'
+                        value={drug}
+                        onChangeText={setDrug}
+                    />
+                </View>
 
-            <Text style={styles.startDate}>Start Date</Text>
-            <View style={styles.startDateButtons}>
-                <TouchableOpacity style = {styles.startButton}>
-                    <Text style = {styles.startButton}>Today</Text>    
-                </TouchableOpacity>
+                <View style={styles.inputGroup}>
+                    <Text style={styles.label}>Pill Dose (mg)</Text>
+                    <TextInput 
+                        style={styles.input}
+                        placeholder = 'Dose per pill (mg)'
+                        value={pillDose}
+                        keyboardType='numeric'
+                        onChangeText={setPillDose}
+                    />
+                </View>
 
-                <TouchableOpacity style = {styles.startButton}>
-                    <Text style = {styles.startButton}>Tomorrow</Text>
-                </TouchableOpacity>
-                
-                <TouchableOpacity style = {styles.startButton}>
-                    <Text style = {styles.startButton}>Select Date</Text>
-                </TouchableOpacity>
+                <View style={styles.inputGroup}>
+                    <Text style={styles.label}>Daily Dose (mg)</Text>
+                    <TextInput 
+                        style={styles.input}
+                        placeholder = 'Total per Day (mg)'
+                        value={dailyDose}
+                        keyboardType='numeric'
+                        onChangeText={setDailyDose}
+                    />
+                </View>
+
+                <View style={styles.inputGroup}>
+                    <Text style={styles.label}>Stock</Text>
+                    <TextInput 
+                        style={styles.input}
+                        placeholder = 'Number of Pills'
+                        value={numberPills}
+                        keyboardType='numeric'
+                        onChangeText={setNumberPills}
+                />
+                </View>
+
+                <View style={styles.inputGroup}>
+                    <Text style={styles.label}>Start Date</Text>
+                    <TouchableOpacity onPress = {() => setShowDatePicker(true)}>
+                        <TextInput style = {styles.input}
+                            placeholder = 'Prescription Start Date'
+                            value = {formatDate(startDate)}
+                            editable={false} // prevents direct typing
+                            />
+                    </TouchableOpacity>
+                    <TouchableOpacity>
+                        {showDatePicker && 
+                        <DateTimePicker 
+                            value={startDate || new Date()}
+                            mode="date"
+                            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                            onChange={handleDateChange}
+                        />
+                        }
+                    </TouchableOpacity>
+                </View>
             </View>
 
             <TouchableOpacity
@@ -104,15 +172,23 @@ const styles = StyleSheet.create({
         padding: 20,
         gap: 20,
     },
+    description: {fontSize: 16,},
     inputsContainer: {
         paddingTop: 20,
-        paddingBottom: 40,
+        paddingBottom: 30,
         display: 'flex',
         gap: 20,
     },
     buttonsContainer: {
         display: 'flex',
         gap: 15,
+    },
+    inputGroup: {},
+    label: {
+        fontSize: 16,
+        marginBottom: 6,
+        color: '#00569D',
+        fontWeight: 'bold',
     },
     input: {
         borderWidth: 1,
@@ -121,6 +197,7 @@ const styles = StyleSheet.create({
         paddingTop: 10,
         paddingBottom: 10,
         paddingHorizontal: 10,
+        fontSize: 16,
     },
     button: {
         backgroundColor: '#00569D',
@@ -130,19 +207,7 @@ const styles = StyleSheet.create({
         paddingVertical: 6,
         paddingHorizontal: 24,
         alignSelf: 'center',
-    },
-    startButton: {
-        backgroundColor: 'green',
-        color: 'white',
-        borderRadius: 8,
-        paddingVertical: 4,
-        paddingHorizontal: 4,
-        alignSelf: 'center'
-    },
-    startDate: {
-        color: '#E0E0E0',
-    },
-    startDateButtons: {
-        flexDirection: 'row'
-    },
+    }
+
+ 
 })
