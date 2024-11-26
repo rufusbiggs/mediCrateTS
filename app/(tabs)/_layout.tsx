@@ -22,31 +22,9 @@ const Layout = () => {
 }
 
 const AuthRouter = () => {
-  const [loading, setLoading] = useState(true);
-  const [userData, setUserData] = useState<any>({});
   const { user } = useAuth();
-  const { fetchData } = useUser();
-
-  useEffect(() => {
-    const checkAuth = async () => {
-      setLoading(true);
-      if (user) {
-        try {
-          const data = await fetchData(user.uid);
-          setUserData(data)
-          await new Promise(resolve => setTimeout(resolve, 1000));
-        } catch (e) {
-          console.error('Error fetching user data', e)
-        } finally {
-          setLoading(false)
-        }
-      } else {
-        setLoading(false);
-      }
-    }
-
-    checkAuth();
-  }, [user]);
+  const { loading, userData } = useUser();
+  
 
   if (loading) {
     return (

@@ -62,12 +62,8 @@ const DELIVERY_TIME = 4;
 
 const HomePage = () => {
 
-  const { userData } = useUser();
   const { user } = useAuth();
-  const { fetchPrescriptions } = useUser();
-
-  const [loadingPrescriptions, setLoadingPrescriptions] = useState(true);
-  const [prescriptionData, setPrescriptionData] = useState<Prescription[]>([])
+  const { userData, prescriptionData, fetchPrescriptions } = useUser();
 
   const today = calculateFutureDate(0, true);
 
@@ -90,25 +86,6 @@ const HomePage = () => {
     daysIncludingDelivery = daysUntilSoonest - DELIVERY_TIME;
     runOutDate = calculateFutureDate(daysIncludingDelivery, false);
   }
-
-  
-  useEffect(() => {
-    const fetchPrescriptionData = async () => {
-        setLoadingPrescriptions(true);
-        try {
-            const prescriptions = await fetchPrescriptions(user.uid);
-            setPrescriptionData(prescriptions); // Update state with validated data
-        } catch (error) {
-            console.error('Error fetching prescriptions:', error);
-        } finally {
-            setLoadingPrescriptions(false);
-        }
-    };
-
-    if (user?.uid) {
-        fetchPrescriptionData();
-    }
-}, [user?.uid]);
 
   return (
     <ScrollView style={styles.main}>

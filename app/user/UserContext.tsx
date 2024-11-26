@@ -5,11 +5,13 @@ import { ref, onValue, update, get, push, set } from 'firebase/database';
 
 interface UserContextType {
     userData: UserDataType,
+    prescriptionData: Prescription[],
+    loading: boolean,
     updateUserData: (userId: string, data: Partial<UserDataType>) => Promise<void>;
     setUserData: React.Dispatch<React.SetStateAction<any>>;
     fetchData: (userId: string) => Promise<void>;
     addPrescription: (userId: string, prescription: Prescription) => Promise<void>;
-    fetchPrescriptions: (userId: string) => Promise<Prescription[]>;
+    fetchPrescriptions: (userId: string) => Promise<void>;
     addStock: (userId: string, prescriptionId: string, addedPills: number) => Promise<void>;
 }
 
@@ -32,6 +34,8 @@ const UserContext = createContext<UserContextType | null>(null);
 const UserProvider = ({ children }: { children : ReactNode }) => {
     const { user } = useAuth();
     const [userData, setUserData] = useState<UserDataType>({});
+    const [prescriptionData, setPrescriptionData] = useState<Prescription[]>([])
+    const [loading, setLoading] = useState(true);
 
     const updateUserData = async (userId: string, data: Partial<UserDataType>) => {
         try {
@@ -67,7 +71,7 @@ const UserProvider = ({ children }: { children : ReactNode }) => {
         }
     }
 
-    const fetchPrescriptions = async (userId: string): Promise<Prescription[]> => {
+    const fetchPrescriptions = async (userId: string) => {
         try {
             const prescriptionRef = ref(database, `prescriptions/${userId}`);
             const snapshot = await get(prescriptionRef);
@@ -88,14 +92,12 @@ const UserProvider = ({ children }: { children : ReactNode }) => {
                     };
                 });
     
-                return prescriptionsArray;
+                setPrescriptionData(prescriptionsArray);
             } else {
                 console.log('No prescriptions found');
-                return [];
             }
         } catch (e) {
             console.error('Error fetching prescriptions: ', e);
-            return [];
         }
     };
 
@@ -111,7 +113,7 @@ const UserProvider = ({ children }: { children : ReactNode }) => {
         }
     }
 
-    useEffect(() => {
+    const fetchUserData = async () => {
         if (user) {
             const userRef = ref(database, `users/${user.uid}`);
             onValue(userRef, snapshot => {
@@ -120,11 +122,48 @@ const UserProvider = ({ children }: { children : ReactNode }) => {
         } else {
             setUserData({});
         }
-    }, [user]);
+    };
+
+    const checkAuth = async () => {
+        if (user) {
+          try {
+            const data = await fetchData(user.uid);
+            setUserData(data)
+            await new Promise(resolve => setTimeout(resolve, 1000));
+          } catch (e) {
+            console.error('Error fetching user data', e)
+          } 
+        } else {
+          setLoading(false);
+        }
+      }
+
+    // Initialize App with start up data fetches
+
+    useEffect(() => {
+        const initialize = async () => {
+            setLoading(true);
+            if (user) {
+                try {
+                    await checkAuth();
+                    await fetchUserData();
+                    await fetchPrescriptions(user.uid);
+                } catch (e) {
+                    console.error('Error initializing app: ', e);
+                } finally {
+                    setLoading(false);
+                }
+            }
+        }
+
+        initialize()
+    }, [user])
 
     return (
         <UserContext.Provider value={{
             userData, 
+            prescriptionData,
+            loading,
             updateUserData, 
             setUserData, 
             fetchData,
