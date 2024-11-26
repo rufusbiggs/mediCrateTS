@@ -2,7 +2,6 @@ import React, { createContext, useEffect, useState, useContext, ReactNode } from
 import { useAuth } from '../auth/AuthContext';
 import { database } from '../../services/firebaseConfig';
 import { ref, onValue, update, get, push, set } from 'firebase/database';
-import { LocalRouteParamsContext } from 'expo-router/build/Route';
 
 interface UserContextType {
     userData: UserDataType,
@@ -10,7 +9,7 @@ interface UserContextType {
     setUserData: React.Dispatch<React.SetStateAction<any>>;
     fetchData: (userId: string) => Promise<void>;
     addPrescription: (userId: string, prescription: Prescription) => Promise<void>;
-    fetchPrescriptions: (userId: string) => Promise<Record<string, Prescription> | undefined>;
+    fetchPrescriptions: (userId: string) => Promise<Prescription[]>;
     addStock: (userId: string, prescriptionId: string, addedPills: number) => Promise<void>;
 }
 
@@ -68,19 +67,37 @@ const UserProvider = ({ children }: { children : ReactNode }) => {
         }
     }
 
-    const fetchPrescriptions = async (userId: string): Promise<Record<string, Prescription> | undefined> => {
+    const fetchPrescriptions = async (userId: string): Promise<Prescription[]> => {
         try {
             const prescriptionRef = ref(database, `prescriptions/${userId}`);
             const snapshot = await get(prescriptionRef);
+    
             if (snapshot.exists()) {
-                return snapshot.val()
+                const prescriptionData = snapshot.val();
+                const prescriptionsArray = Object.entries(prescriptionData).map(([key, value]) => {
+                    const data = value as Partial<Prescription>;
+
+                    return {
+                        id: data.id || Number(key), // Use Firebase key if id is missing
+                        drug: data.drug || '',
+                        pillDose: data.pillDose || 0,
+                        dailyDose: data.dailyDose || 0,
+                        startDate: data.startDate || '',
+                        initialStock: data.initialStock || 0,
+                        addedPills: data.addedPills || [],
+                    };
+                });
+    
+                return prescriptionsArray;
             } else {
                 console.log('No prescriptions found');
+                return [];
             }
         } catch (e) {
             console.error('Error fetching prescriptions: ', e);
+            return [];
         }
-    }
+    };
 
     const addStock = async (userId: string, prescriptionId: string, addedPills: number) => {
         try {

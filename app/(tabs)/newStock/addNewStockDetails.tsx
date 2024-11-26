@@ -56,7 +56,7 @@ const AddNewStockDetails = () => {
             id: Date.now(),
             drug: drug,
             pillDose: Number(pillDose),
-            dailyDose: Number(dailyDose) / Number(pillDose),
+            dailyDose: Number(dailyDose),
             startDate: startDate ? startDate.toISOString() : new Date().toISOString(),
             initialStock: Number(numberPills),
             addedPills: [],

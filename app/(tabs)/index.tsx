@@ -4,6 +4,8 @@ import PrescriptionCard from '../components/PrescriptionCard';
 import { calculateFutureDate, getCurrentStock, daysLeft } from '../../services/functions';
 import { FontAwesome5 } from '@expo/vector-icons'
 import { useUser } from '../user/UserContext';
+import { useAuth } from '../auth/AuthContext';
+import { useEffect, useState } from 'react';
 
 // Fetch Prescriptions e.g.
 interface Prescription {
@@ -61,20 +63,52 @@ const DELIVERY_TIME = 4;
 const HomePage = () => {
 
   const { userData } = useUser();
+  const { user } = useAuth();
+  const { fetchPrescriptions } = useUser();
+
+  const [loadingPrescriptions, setLoadingPrescriptions] = useState(true);
+  const [prescriptionData, setPrescriptionData] = useState<Prescription[]>([])
 
   const today = calculateFutureDate(0, true);
-  const allPrescriptionsDaysLeft : number[] = prescriptionsData.map(({ startDate, initialStock, addedPills, pillDose, dailyDose }) => {
-    const numPerDay = dailyDose / pillDose;
-    const startDateDateFormat = new Date(startDate)
-    const currentStock = getCurrentStock(startDateDateFormat, dailyDose, pillDose, addedPills, initialStock);
+
+  const calculatePrescriptionDaysLeft = (prescription : Prescription): number => {
+    const numPerDay = prescription.dailyDose / prescription.pillDose;
+    const startDateDateFormat = new Date(prescription.startDate);
+    const currentStock = getCurrentStock(startDateDateFormat, prescription.dailyDose, prescription.pillDose, prescription.addedPills, prescription.initialStock);
     const timeLeft = daysLeft(currentStock, numPerDay);
 
     return timeLeft
-  });
+  }
 
-  const daysUntilSoonest : number = Math.min(...allPrescriptionsDaysLeft);
-  const daysIncludingDelivery : number = daysUntilSoonest - DELIVERY_TIME;
-  const runOutDate = calculateFutureDate(daysIncludingDelivery, false);
+  let daysUntilSoonest = 0;
+  let daysIncludingDelivery = 0;
+  let runOutDate = calculateFutureDate(0, false);
+
+  if (prescriptionData) {
+    const allPrescriptionsDaysLeft = prescriptionData.map(prescription => calculatePrescriptionDaysLeft(prescription));
+    daysUntilSoonest = Math.min(...allPrescriptionsDaysLeft);
+    daysIncludingDelivery = daysUntilSoonest - DELIVERY_TIME;
+    runOutDate = calculateFutureDate(daysIncludingDelivery, false);
+  }
+
+  
+  useEffect(() => {
+    const fetchPrescriptionData = async () => {
+        setLoadingPrescriptions(true);
+        try {
+            const prescriptions = await fetchPrescriptions(user.uid);
+            setPrescriptionData(prescriptions); // Update state with validated data
+        } catch (error) {
+            console.error('Error fetching prescriptions:', error);
+        } finally {
+            setLoadingPrescriptions(false);
+        }
+    };
+
+    if (user?.uid) {
+        fetchPrescriptionData();
+    }
+}, [user?.uid]);
 
   return (
     <ScrollView style={styles.main}>
@@ -89,12 +123,19 @@ const HomePage = () => {
             <Text style={styles.runsOut}>Your stock will run out a few days later</Text>
           </View>
         </View>
-        <Text style={styles.medications}>All Prescriptions</Text>
-        {prescriptionsData.map((prescription, idx) => {
-          return (
-            <PrescriptionCard key={idx} prescription={prescription} />
-          )
-        })}
+        {prescriptionData ? 
+          <>
+            <Text style={styles.medications}>All Prescriptions</Text>
+            {prescriptionData.map((prescription, idx) => {
+              return (
+                <PrescriptionCard key={idx} prescription={prescription} />
+              )
+            })}
+          </>
+        : <Text style={styles.medications}>No Current Prescriptions</Text>
+        }
+        
+        
     </ScrollView>
   )
 };
