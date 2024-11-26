@@ -18,52 +18,11 @@ interface Prescription {
   addedPills: number[],
 }
 
-const prescriptionsData : Prescription[] = [
-  {
-  "id": 1,
-  "drug": "Lacosamide",
-  "pillDose": 50,
-  "dailyDose": 300,
-  "startDate": "2024-02-01T00:00:00.000Z",
-  "initialStock": 1692,
-  "addedPills": [50]
-  },
-  {
-  "id": 2,
-  "drug": "Levothyroxine",
-  "pillDose": 250,
-  "dailyDose": 250,
-  "startDate": "2024-02-01T00:00:00.000Z",
-  "initialStock": 392,
-  "addedPills": [50, 100]
-  },
-  {
-  "id": 3,
-  "drug": "Dexamethasone",
-  "pillDose": 50,
-  "dailyDose": 100,
-  "startDate": "2024-02-01T00:00:00.000Z",
-  "initialStock": 392,
-  "addedPills": [50, 90, 85]
-  },
-  {
-  "id": 3,
-  "drug": "Dexamethasone",
-  "pillDose": 50,
-  "dailyDose": 100,
-  "startDate": "2024-02-01T00:00:00.000Z",
-  "initialStock": 392,
-  "addedPills": [50, 90, 85]
-  }
-]
-; 
-
 const DELIVERY_TIME = 4;
 
 const HomePage = () => {
 
-  const { user } = useAuth();
-  const { userData, prescriptionData, fetchPrescriptions } = useUser();
+  const { prescriptionData } = useUser();
 
   const today = calculateFutureDate(0, true);
 

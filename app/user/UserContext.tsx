@@ -138,7 +138,7 @@ const UserProvider = ({ children }: { children : ReactNode }) => {
         }
       }
 
-    // Initialize App with start up data fetches
+    // Initialize App - loading data in consolidated place
 
     useEffect(() => {
         const initialize = async () => {

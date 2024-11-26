@@ -6,7 +6,6 @@ import UserProvider from "../user/UserContext";
 import { createStackNavigator } from '@react-navigation/stack';
 import Register from '../Register';
 import Login from '../Login'; 
-import { useState, useEffect } from 'react';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
 
 const Stack = createStackNavigator();
