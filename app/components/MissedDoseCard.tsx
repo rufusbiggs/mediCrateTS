@@ -1,5 +1,6 @@
-import { StyleSheet, View, Text } from "react-native";
-import { getCurrentStock, runsOut } from "../../services/functions";
+import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import { useUser } from "../user/UserContext";
+import { useAuth } from "../auth/AuthContext";
 
 interface Prescription {
   id: number,
@@ -14,6 +15,15 @@ interface Prescription {
 const MissedDoseCard = ({ prescription } : { prescription : Prescription }) => {
   const { drug, pillDose, dailyDose, startDate, initialStock, addedPills } = prescription;
   const pillsPerDay = dailyDose / pillDose;
+  const { userData, addStock } = useUser();
+  const { user } = useAuth();
+
+  const handlePress = async () => {
+
+    // Need to Address this with prescription ID and number of missed pills etc.
+
+    // await addStock(user.uid, prescriptionID)
+  }
 
   return (
     <View style={styles.prescriptionContainer}>
@@ -21,9 +31,14 @@ const MissedDoseCard = ({ prescription } : { prescription : Prescription }) => {
         <Text style={styles.drugName}>{drug} {pillDose}mg</Text>
         <Text style={styles.dailyDose}>{dailyDose}mg per day</Text>
       </View>
-      {/* <Text style={styles.dailyPills}>Take {pillsPerDay} pill{pillsPerDay > 1 ? 's' : ''} per day</Text> */}
       <Text style={styles.missedInfo}>Selecting 'Missed Dose' will add {pillsPerDay} pill{pillsPerDay > 1 ? 's' : ''} back to your stock.</Text>
-      <Text style={styles.missed}>Confirm Missed Dose</Text>
+      <TouchableOpacity
+      style={styles.missed}
+      onPress={handlePress}
+      disabled={false}
+      >
+        <Text style={styles.missed}>Confirm Missed Dose</Text>
+      </TouchableOpacity>
     </View>
   )
 }
@@ -77,13 +92,13 @@ const styles = StyleSheet.create({
     color: '#a05f3a',
     fontWeight: 'bold',
     borderRadius: 10,
-    padding: 8,
+    padding: 2,
     paddingRight: 20,
     paddingLeft: 20,
-    margin: 15,
-    marginBottom: 15,
+    margin: 8,
+    marginBottom: 8,
     alignSelf: 'center',
-}
+  },
 })
 
 export default MissedDoseCard
