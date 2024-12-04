@@ -2,7 +2,6 @@ import { StyleSheet, View, Text } from "react-native";
 import { getCurrentStock, runsOut } from "../../services/functions";
 
 interface Prescription {
-  id: number,
   drug: string,
   pillDose: number,
   dailyDose: number,

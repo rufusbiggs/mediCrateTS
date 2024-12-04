@@ -7,7 +7,7 @@ import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { NewStockStackParamList } from "./index";
 
 interface Prescription {
-    id: number,
+    id: string,
     drug: string,
     pillDose: number,
     dailyDose: number,
@@ -52,8 +52,7 @@ const AddNewStockDetails = () => {
         }
 
         setLoadingSubmit(true);
-        const newPrescription: Prescription = {
-            id: Date.now(),
+        const newPrescription: Omit<Prescription, 'id'> = {
             drug: drug,
             pillDose: Number(pillDose),
             dailyDose: Number(dailyDose),

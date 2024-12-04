@@ -9,7 +9,6 @@ import { useEffect, useState } from 'react';
 
 // Fetch Prescriptions e.g.
 interface Prescription {
-  id: number,
   drug: string,
   pillDose: number,
   dailyDose: number,

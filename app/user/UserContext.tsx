@@ -20,7 +20,7 @@ type UserDataType = {
 }
 
 interface Prescription {
-    id: number,
+    id?: string,
     drug: string,
     pillDose: number,
     dailyDose: number,
@@ -60,7 +60,7 @@ const UserProvider = ({ children }: { children : ReactNode }) => {
         }
     }
 
-    const addPrescription = async (userId: string, prescription: Prescription) => {
+    const addPrescription = async (userId: string, prescription: Omit<Prescription, 'id'>) => {
         try {
             const prescriptionRef = ref(database, `prescriptions/${userId}`);
             const newPrescriptionRef = push(prescriptionRef);
@@ -82,7 +82,7 @@ const UserProvider = ({ children }: { children : ReactNode }) => {
                     const data = value as Partial<Prescription>;
 
                     return {
-                        id: data.id || Number(key), // Use Firebase key if id is missing
+                        id: key, // Use Firebase key if id is missing
                         drug: data.drug || '',
                         pillDose: data.pillDose || 0,
                         dailyDose: data.dailyDose || 0,
@@ -103,11 +103,15 @@ const UserProvider = ({ children }: { children : ReactNode }) => {
 
     const addStock = async (userId: string, prescriptionId: string, addedPills: number) => {
         try {
-            const prescriptionRef = ref(database, `prescriptions/${userId}/${prescriptionId}`);
-            await update(prescriptionRef, {
-                [Date.now()]: addedPills
+            const prescriptionRef = ref(database, `prescriptions/${userId}/${prescriptionId}/addedPills`);
+            const snapshot = await get(prescriptionRef);
+            const currentAddedPills: number[] = snapshot.exists() ? snapshot.val() : [];
+            const updatedAddedPills = [...currentAddedPills, addedPills]
+            await update(ref(database, `prescriptions/${userId}/${prescriptionId}`), {
+                addedPills: updatedAddedPills,
             });
-            console.log('Stock updated.');
+
+            console.log('Stock updated with new pills ', addedPills);
         } catch (e) {
             console.error(`Error updating stock: `, e);
         }

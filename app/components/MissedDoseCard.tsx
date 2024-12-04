@@ -3,7 +3,7 @@ import { useUser } from "../user/UserContext";
 import { useAuth } from "../auth/AuthContext";
 
 interface Prescription {
-  id: number,
+  id?: string,
   drug: string,
   pillDose: number,
   dailyDose: number,
@@ -13,16 +13,26 @@ interface Prescription {
 }
 
 const MissedDoseCard = ({ prescription } : { prescription : Prescription }) => {
-  const { drug, pillDose, dailyDose, startDate, initialStock, addedPills } = prescription;
-  const pillsPerDay = dailyDose / pillDose;
+  
   const { userData, addStock } = useUser();
   const { user } = useAuth();
 
+  const { id, drug, pillDose, dailyDose } = prescription;
+  const pillsPerDay = dailyDose / pillDose;
+
+
   const handlePress = async () => {
+    if (!id) {
+      console.error('Prescription ID is missing.');
+      return;
+    }
 
-    // Need to Address this with prescription ID and number of missed pills etc.
-
-    // await addStock(user.uid, prescriptionID)
+    try {
+      await addStock(user.uid, id, pillsPerDay)
+      console.log(`Stock updated for prescriptionID: ${id}`);
+    } catch (e) {
+      console.error('Error adding prescription: ', e);
+    }
   }
 
   return (
