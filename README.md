@@ -26,7 +26,7 @@
 
 3. Start the app in Expo Go
    ```bash
-   npm expo start
+   npx expo start
 
 4. Scan the QR code with your Expo Go app to run it on your device.
 
